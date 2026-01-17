@@ -15,3 +15,7 @@ Create/Update virtual environment
 uv sync
 ```
 
+Dependency audit
+```
+uv run --with deptry deptry .
+```
