@@ -1,17 +1,36 @@
 import requests
 
+
 def crawl_headers(url):
     if not url.startswith("https://"):
         url = 'https://' + url
     try:
         response = requests.head(url=url, allow_redirects=True)
-        header = response.headers
-        print("Headers:")
-        for key, value in header.items():
-            print(f"{key}: {value}")
-    except requests.exceptions.SSLError:
-        print("SSL Error")
+        return response.headers
+    except Exception as e:
+        print(f"Error: {e}")
+        return {}
+
+def filter_headers(headers, keys):
+    return {k: v for k, v in headers.items() if k in keys}
+
+def evaluate_security(headers):
+    server_header = "Server"
+    if server_header not in headers:
+        return "Missing Server header"
+    
+    value = headers[server_header]
+    
+    return f"Webserver: {value}"
 
 if __name__ == "__main__":
     target_url = input("Enter URL: ")
-    crawl_headers(target_url)
+    headers = crawl_headers(target_url)
+    
+    for key, value in headers.items():
+        print(f"{key}: {value}")
+    
+    print("\n\n\n")
+        
+    evaluation = evaluate_security(headers)
+    print(evaluation)
