@@ -1,10 +1,10 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from crawler.main import crawl_headers, filter_headers, evaluate_security
+from header_crawl.core import crawl_headers, filter_headers, evaluate_security
 
 class TestHeaderCrawler(unittest.TestCase):
 
-    @patch('crawler.main.requests.head')
+    @patch('header_crawl.core.requests.head')
     def test_crawl_headers_success(self, mock_head):
         mock_response = MagicMock()
         mock_response.headers = {'Content-Type': 'text/html', 'Server': 'nginx'}
@@ -14,7 +14,7 @@ class TestHeaderCrawler(unittest.TestCase):
         self.assertEqual(headers, {'Content-Type': 'text/html', 'Server': 'nginx'})
 
     @patch('builtins.print')
-    @patch('crawler.main.requests.head')
+    @patch('header_crawl.core.requests.head')
     def test_crawl_headers_error(self, mock_head, mock_print):
         mock_head.side_effect = Exception("Connection error")
         headers = crawl_headers('https://example.com')

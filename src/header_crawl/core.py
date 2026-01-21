@@ -1,6 +1,5 @@
 import requests
 
-
 def crawl_headers(url):
     if not url.startswith("https://"):
         url = 'https://' + url
@@ -23,14 +22,14 @@ def evaluate_security(headers):
     
     return f"Webserver: {value}"
 
-if __name__ == "__main__":
+def main():
     target_url = input("Enter URL: ")
     headers = crawl_headers(target_url)
     
+    print("\nAll Headers:")
     for key, value in headers.items():
         print(f"{key}: {value}")
     
-    print("\n\n\n")
-        
+    print("\n--- Security Evaluation ---")
     evaluation = evaluate_security(headers)
     print(evaluation)
