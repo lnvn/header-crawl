@@ -13,22 +13,15 @@ def crawl_headers(url):
 def filter_headers(headers, keys):
     return {k: v for k, v in headers.items() if k in keys}
 
+from .rules import ACTIVE_RULES
+
 def evaluate_security(headers):
     messages = []
     
-    # Check Server header
-    server_header = "Server"
-    if server_header not in headers:
-        messages.append("Missing Server header")
-    else:
-        messages.append(f"Webserver: {headers[server_header]}")
-        
-    # Check Content-Encoding header
-    encoding_header = "Content-Encoding"
-    if encoding_header not in headers:
-        messages.append("Missing Content-Encoding header. Effect: Larger file sizes and slower load times (no compression).")
-    else:
-        messages.append(f"Content-Encoding: {headers[encoding_header]}")
+    for rule in ACTIVE_RULES:
+        result = rule.evaluate(headers)
+        if result:
+            messages.append(result)
     
     return "\n".join(messages)
 
