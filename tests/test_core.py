@@ -29,12 +29,20 @@ class TestHeaderCrawler(unittest.TestCase):
     def test_evaluate_security_missing_server_header(self):
         headers = {'Content-Type': 'text/html'}
         result = evaluate_security(headers)
-        self.assertEqual(result, "Missing Server header")
+        self.assertIn("Missing Server header", result)
+        self.assertIn("Missing Content-Encoding header", result)
 
     def test_evaluate_security_with_server_header(self):
         headers = {'Server': 'nginx/1.18.0'}
         result = evaluate_security(headers)
-        self.assertEqual(result, "Webserver: nginx/1.18.0")
+        self.assertIn("Webserver: nginx/1.18.0", result)
+        self.assertIn("Missing Content-Encoding header", result)
+        
+    def test_evaluate_content_encoding_present(self):
+        headers = {'Server': 'nginx', 'Content-Encoding': 'gzip'}
+        result = evaluate_security(headers)
+        self.assertIn("Content-Encoding: gzip", result)
+        self.assertNotIn("Missing Content-Encoding header", result)
 
 if __name__ == "__main__":
     unittest.main()

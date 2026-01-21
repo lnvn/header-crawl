@@ -14,13 +14,23 @@ def filter_headers(headers, keys):
     return {k: v for k, v in headers.items() if k in keys}
 
 def evaluate_security(headers):
+    messages = []
+    
+    # Check Server header
     server_header = "Server"
     if server_header not in headers:
-        return "Missing Server header"
+        messages.append("Missing Server header")
+    else:
+        messages.append(f"Webserver: {headers[server_header]}")
+        
+    # Check Content-Encoding header
+    encoding_header = "Content-Encoding"
+    if encoding_header not in headers:
+        messages.append("Missing Content-Encoding header. Effect: Larger file sizes and slower load times (no compression).")
+    else:
+        messages.append(f"Content-Encoding: {headers[encoding_header]}")
     
-    value = headers[server_header]
-    
-    return f"Webserver: {value}"
+    return "\n".join(messages)
 
 def main():
     target_url = input("Enter URL: ")
